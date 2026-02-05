@@ -56,11 +56,11 @@ app.include_router(system.router)
 # Redirect root and any unknown paths to /docs
 from fastapi.responses import RedirectResponse
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 async def root():
     return RedirectResponse(url="/docs")
 
-@app.api_route("/{path_name:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+@app.api_route("/{path_name:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"], include_in_schema=False)
 async def catch_all(path_name: str):
     # Only allow docs, openapi.json, and redoc - redirect everything else
     if path_name in ["docs", "openapi.json", "redoc"] or path_name.startswith("docs/"):
