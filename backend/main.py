@@ -46,6 +46,18 @@ app.include_router(cards.router)
 app.include_router(system.router)
 
 # Redirect root and any unknown paths to /docs
+from fastapi.responses import RedirectResponse
+
 @app.get("/")
 async def root():
-    return {"message": "Homebanking Mock API is running. Visit /docs for Swagger UI."}
+    return RedirectResponse(url="/docs")
+
+@app.api_route("/{path_name:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+async def catch_all(path_name: str):
+    # Only allow docs, openapi.json, and redoc - redirect everything else
+    if path_name in ["docs", "openapi.json", "redoc"] or path_name.startswith("docs/"):
+        # Let FastAPI handle these paths normally
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Not found")
+    # Redirect everything else to /docs
+    return RedirectResponse(url="/docs")
