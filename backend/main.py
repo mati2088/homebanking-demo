@@ -45,6 +45,7 @@ app.include_router(loans.router)
 app.include_router(cards.router)
 app.include_router(system.router)
 
+# Redirect root and any unknown paths to /docs
 @app.get("/")
 async def root():
     return {"message": "Homebanking Mock API is running. Visit /docs for Swagger UI."}
