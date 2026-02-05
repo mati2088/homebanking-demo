@@ -20,6 +20,14 @@ app = FastAPI(
     openapi_tags=tags_metadata
 )
 
+# Keep-alive background task
+from backend.keep_alive import keep_alive
+import asyncio
+
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(keep_alive())
+
 # CORS Configuration
 origins = [
     "*", # Allow all for local testing
